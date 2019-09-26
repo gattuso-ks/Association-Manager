@@ -5,6 +5,7 @@ using namespace std;
 
 Kernel* TCPNet::m_pKernel = 0;
 bool TCPNet::m_bThreadQuitFlag = true;//  线程是否继续执行
+
 TCPNet::TCPNet(Kernel* pKernel)
 {
 	m_pKernel = pKernel;
@@ -17,10 +18,11 @@ TCPNet::~TCPNet(void)
 {
 	this->UnInitNet();
 }
+
 bool TCPNet::InitNet()
 {
 	socketServer = socket(AF_INET,SOCK_STREAM,0);
-	if(socketServer == INVALID_SOCKET)
+	if(socketServer < 0)
 	{
 		return false;
 	}
@@ -29,17 +31,17 @@ bool TCPNet::InitNet()
 	addrServer.sin_addr.s_addr = INADDR_ANY;
 	addrServer.sin_family = AF_INET;
 	addrServer.sin_port = //htons(PROT);
-	if(::bind(socketServer,(const sockaddr*)&addrServer,sizeof(addrServer)) == SOCKET_ERROR)
-	{
-		return false;
-	}
-	//  4.  监听
-	if( ::listen(socketServer,SOMAXCONN) == SOCKET_ERROR ) //  SOMAXCONN 监听个数
+	if(bind(socketServer,(const sockaddr*)&addrServer,sizeof(addrServer)) != 0)
 	{
 		return false;
 	}
 
-	//  5. 创建线程   让线程取接受连接
+	if(listen(socketServer,SOMAXCONN) < 0) //  SOMAXCONN 监听个数
+	{
+		return false;
+	}
+
+	//创建线程监听 TODO
 	m_hAcccptThread = (HANDLE)_beginthreadex(0,0,&TCPNet::AcceptThreadProc,this,0,0);
 	return true;
 }
@@ -81,10 +83,10 @@ bool TCPNet::SendData(SOCKET socketClient,const char* pszBuffer,int nSendLen)
 	if(socketClient == 0 || pszBuffer == 0 || nSendLen <= 0)
 		return false;
 	//  发送4个字节包大小
-	if(::send(socketClient,(const char*)&nSendLen,4,0) <= 0)
+	if(send(socketClient,(const char*)&nSendLen,4,0) <= 0)
 		return false;
 	//  发送内容
-	if(::send(socketClient,(const char*)pszBuffer,nSendLen,0) <= 0)
+	if(send(socketClient,(const char*)pszBuffer,nSendLen,0) <= 0)
 		return false;
 	return true;
 }
