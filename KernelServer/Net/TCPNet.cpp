@@ -78,6 +78,7 @@ void TCPNet::UnInitNet()
 	//  卸载库
 	::WSACleanup();
 }
+
 bool TCPNet::SendData(SOCKET socketClient,const char* pszBuffer,int nSendLen)
 {
 	if(socketClient == 0 || pszBuffer == 0 || nSendLen <= 0)
@@ -90,7 +91,6 @@ bool TCPNet::SendData(SOCKET socketClient,const char* pszBuffer,int nSendLen)
 		return false;
 	return true;
 }
-
 
 unsigned int __stdcall TCPNet::AcceptThreadProc( void * pVoid)
 {
