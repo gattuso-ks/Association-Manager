@@ -1,14 +1,17 @@
-#include "INet.h"
+#ifndef _KERNEL_H
+#define _KERNEL_H
 
-class IKernel
+#include "Net.h"
+
+class Kernel
 {
 	protected:
-		INet* m_pNet;
+		Net* m_pNet;
 	public:
-		IKernel(){m_pNet = 0;}
-		virtual ~IKernel(){}
+		Kernel(){m_pNet = 0;}
+		virtual ~Kernel(){}
 	public:
-		INet* GetNet()
+		Net* GetNet()
 		{
 			return m_pNet;
 		}
@@ -17,3 +20,5 @@ class IKernel
 		virtual void UnInitKernel() = 0;
 		virtual void DealData(int socketClient, char* szBuffer, int nBufferLen) = 0;
 };
+
+#endif

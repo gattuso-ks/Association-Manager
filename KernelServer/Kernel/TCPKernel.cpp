@@ -7,23 +7,23 @@ using namespace std;
 
 PROTOCOL_MAP_BEGIN()
 
-	PROTOCOL(PROTOCOL_REGISTER_RQ,&CTCPKernel::RegisterRQ)
-	PROTOCOL(PROTOCOL_LOGIN_RQ,&CTCPKernel::LoginRQ)
-	PROTOCOL(PROTOCOL_GET_ROOM_INFO_RQ,&CTCPKernel::GetRoomInfoRQ)
-	PROTOCOL(PROTOCOL_SET_ROOM_INFO_RQ,&CTCPKernel::SetRoomInfoRQ)
-	PROTOCOL(PROTOCOL_BEGIN_VEDIO_RQ,&CTCPKernel::BeginVedioRQ)
-	PROTOCOL(PROTOCOL_GET_AUTHOR_LIST_RQ,&CTCPKernel::GetAuthorListRQ)
-	PROTOCOL(PROTOCOL_VEDIO_STREAM_IMFO_RQ,&CTCPKernel::VedioStreamInfo)
-	PROTOCOL(PROTOCOL_VEDIO_STREAM_CONTENT_RQ,&CTCPKernel::VedioStream)
-	PROTOCOL(PROTOCOL_SELECT_AUTHOR_RQ,&CTCPKernel::SelectAuthorRQ)
+	PROTOCOL(PROTOCOL_REGISTER_RQ,&TCPKernel::RegisterRQ)
+	PROTOCOL(PROTOCOL_LOGIN_RQ,&TCPKernel::LoginRQ)
+	PROTOCOL(PROTOCOL_GET_ROOM_INFO_RQ,&TCPKernel::GetRoomInfoRQ)
+	PROTOCOL(PROTOCOL_SET_ROOM_INFO_RQ,&TCPKernel::SetRoomInfoRQ)
+	PROTOCOL(PROTOCOL_BEGIN_VEDIO_RQ,&TCPKernel::BeginVedioRQ)
+	PROTOCOL(PROTOCOL_GET_AUTHOR_LIST_RQ,&TCPKernel::GetAuthorListRQ)
+	PROTOCOL(PROTOCOL_VEDIO_STREAM_IMFO_RQ,&TCPKernel::VedioStreamInfo)
+	PROTOCOL(PROTOCOL_VEDIO_STREAM_CONTENT_RQ,&TCPKernel::VedioStream)
+	PROTOCOL(PROTOCOL_SELECT_AUTHOR_RQ,&TCPKernel::SelectAuthorRQ)
 
 PROTOCOL_MAP_END()
 
-CTCPKernel::CTCPKernel()
+TCPKernel::TCPKernel()
 {
 	m_pNet = new CTCPNet(this);   //  创建一个网络对象
 }
-CTCPKernel::~CTCPKernel()
+TCPKernel::~TCPKernel()
 {
 	delete m_pNet;   //  删除网络
 	m_pNet = 0;
@@ -53,7 +53,7 @@ CTCPKernel::~CTCPKernel()
 	}	
 }
 
-bool CTCPKernel::InitKernel()
+bool TCPKernel::InitKernel()
 {
 	//  网络的初始化
 	if(m_pNet->InitNet() == false)
@@ -69,13 +69,13 @@ bool CTCPKernel::InitKernel()
 	return true;
 }
 
-void CTCPKernel::UnInitKernel()
+void TCPKernel::UnInitKernel()
 {
 	//  断开数据库
 	sql.DisConnect();
 }
 
-void CTCPKernel::DealData(int socketClient,char* szBuffer,int nBufferLen)
+void TCPKernel::DealData(int socketClient,char* szBuffer,int nBufferLen)
 {
 	//  取出协议头
 	PackType packtype = *szBuffer;
@@ -100,7 +100,7 @@ void CTCPKernel::DealData(int socketClient,char* szBuffer,int nBufferLen)
 	}
 }
 
-void CTCPKernel::RegisterRQ(int socketClient,char* szBuffer,int nBufferLen)
+void TCPKernel::RegisterRQ(int socketClient,char* szBuffer,int nBufferLen)
 {
 	STRU_REGISTER_RQ* srRQ = (STRU_REGISTER_RQ*)szBuffer;
 	STRU_REGISTER_RS srRS;
@@ -149,7 +149,7 @@ void CTCPKernel::RegisterRQ(int socketClient,char* szBuffer,int nBufferLen)
 	}
 }
 
-void CTCPKernel::LoginRQ(int socketClient,char* szBuffer,int nBufferLen)
+void TCPKernel::LoginRQ(int socketClient,char* szBuffer,int nBufferLen)
 {
 	STRU_LOGIN_RQ* slRQ = (STRU_LOGIN_RQ*)szBuffer;
 	STRU_LOGIN_RS slRS;
@@ -202,7 +202,7 @@ void CTCPKernel::LoginRQ(int socketClient,char* szBuffer,int nBufferLen)
 	m_pNet->SendData(socketClient,(const char*)&slRS,sizeof(slRS));
 }
 
-void CTCPKernel::GetRoomInfoRQ(int socketClient,char* szBuffer,int nBufferLen)
+void TCPKernel::GetRoomInfoRQ(int socketClient,char* szBuffer,int nBufferLen)
 {
 	STRU_GET_ROOM_INFO_RQ* sgriRQ = (STRU_GET_ROOM_INFO_RQ*)szBuffer;
 	STRU_GET_ROOM_INFO_RS sgriRS;
@@ -227,7 +227,7 @@ void CTCPKernel::GetRoomInfoRQ(int socketClient,char* szBuffer,int nBufferLen)
 	m_pNet->SendData(socketClient,(const char*)&sgriRS,sizeof(sgriRS));
 }
 
-void CTCPKernel::SetRoomInfoRQ(int socketClient,char* szBuffer,int nBufferLen)
+void TCPKernel::SetRoomInfoRQ(int socketClient,char* szBuffer,int nBufferLen)
 {
 	STRU_SET_ROOM_INFO_RQ* sgriRQ = (STRU_SET_ROOM_INFO_RQ*)szBuffer;
 	STRU_SET_ROOM_INFO_RS sgriRS;
@@ -245,7 +245,7 @@ void CTCPKernel::SetRoomInfoRQ(int socketClient,char* szBuffer,int nBufferLen)
 	m_pNet->SendData(socketClient,(const char*)&sgriRS,sizeof(sgriRS));
 }
 
-void CTCPKernel::BeginVedioRQ(int socketClient,char* szBuffer,int nBufferLen)
+void TCPKernel::BeginVedioRQ(int socketClient,char* szBuffer,int nBufferLen)
 {
 	STRU_BEGIN_VEDIO_RQ* sbviRQ = (STRU_BEGIN_VEDIO_RQ*)szBuffer;
 	STRU_BEGIN_VEDIO_RS sbviRS;
@@ -279,7 +279,7 @@ void CTCPKernel::BeginVedioRQ(int socketClient,char* szBuffer,int nBufferLen)
 	m_pNet->SendData(socketClient,(const char*)&sbviRS,sizeof(sbviRQ));
 }
 
-void CTCPKernel::GetAuthorListRQ(int socketClient,char* szBuffer,int nBufferLen)
+void TCPKernel::GetAuthorListRQ(int socketClient,char* szBuffer,int nBufferLen)
 {
 	STRU_GET_AUTHOR_LIST_RQ* sgalRQ = (STRU_GET_AUTHOR_LIST_RQ*)szBuffer;
 	STRU_GET_AUTHOR_LIST_RS sgqlRS;
@@ -315,7 +315,7 @@ void CTCPKernel::GetAuthorListRQ(int socketClient,char* szBuffer,int nBufferLen)
 	}
 }
 
-void CTCPKernel::VedioStreamInfo(int socketClient,char* szBuffer,int nBufferLen)
+void TCPKernel::VedioStreamInfo(int socketClient,char* szBuffer,int nBufferLen)
 {
 	STRU_VEDIO_STREAM_RQ* sbsRQ = (STRU_VEDIO_STREAM_RQ*)szBuffer;
 	//  在 主播和观众的映射表中 查找  对应的主播
@@ -341,7 +341,7 @@ void CTCPKernel::VedioStreamInfo(int socketClient,char* szBuffer,int nBufferLen)
 	}
 }
 
-void CTCPKernel::VedioStream(int socketClient,char* szBuffer,int nBufferLen)
+void TCPKernel::VedioStream(int socketClient,char* szBuffer,int nBufferLen)
 {
 	STRU_VEDIO_STREAM_RQ* sbsRQ = (STRU_VEDIO_STREAM_RQ*)szBuffer;
 
@@ -369,7 +369,7 @@ void CTCPKernel::VedioStream(int socketClient,char* szBuffer,int nBufferLen)
 }
 
 
-void CTCPKernel::SelectAuthorRQ(int socketClient,char* szBuffer,int nBufferLen)
+void TCPKernel::SelectAuthorRQ(int socketClient,char* szBuffer,int nBufferLen)
 {
 	STRU_SELECT_AUTHOR_RQ* ssaRQ = (STRU_SELECT_AUTHOR_RQ*)szBuffer;
 	STRU_SELECT_AUTHOR_RS ssaRS;

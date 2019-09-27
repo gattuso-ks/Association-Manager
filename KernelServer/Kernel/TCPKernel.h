@@ -1,6 +1,6 @@
-#ifndef TCPKERNEL_H
-#define TCPKERNEL_H
-#include "IKernel.h"
+#ifndef _TCPKERNEL_H
+#define _TCPKERNEL_H
+#include "Kernel.h"
 #include "MyThreadPool.h"
 #include "CMySql.h"
 #include "Protocol.h"
@@ -13,8 +13,8 @@ using namespace std;
 #define PROTOCOL_MAP_END()  {0,0}};
 
 //  C++成员 函数指针
-class CTCPKernel;
-typedef void (CTCPKernel::*PFUN)(int,char*,int);
+class TCPKernel;
+typedef void (TCPKernel::*PFUN)(int,char*,int);
 struct STRU_PROTOCOL_MAP
 {
 	PackType packtype;  //  协议
@@ -43,7 +43,7 @@ struct AudienceNode
 	//HANDLE hEventQuitAuthor;    //  退出这个主播
 };
 
-class CTCPKernel : public IKernel
+class TCPKernel : public Kernel
 {
 	private:
 		//CMyThreadPool threadpool;  //  线程池
@@ -53,8 +53,8 @@ class CTCPKernel : public IKernel
 		list<AudienceNode*> m_lstAudienceList;   //  观众列表
 		map<AuthorNode*,list<AudienceNode*>> m_mpAuthorToAudience;
 	public:
-		CTCPKernel();
-		virtual ~CTCPKernel();
+		TCPKernel();
+		virtual ~TCPKernel();
 	public:
 		virtual bool InitKernel();
 		virtual void UnInitKernel();
@@ -70,4 +70,5 @@ class CTCPKernel : public IKernel
 		void VedioStream(int socketClient,char* szBuffer,int nBufferLen);
 		void SelectAuthorRQ(int socketClient,char* szBuffer,int nBufferLen);
 };
+
 #endif
